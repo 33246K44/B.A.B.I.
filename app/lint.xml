@@ -1,0 +1,6 @@
+<lint>
+    <issue id="MissingTranslation" severity="ignore" />
+    <issue id="CustomLintCheck1" severity="error" />
+    <issue id="CustomLintCheck2" severity="warning" />
+    <!-- Add more custom lint checks as needed -->
+</lint>
