@@ -9,7 +9,7 @@
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Futhark Translator"
+        android:text="Script Translator"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
         android:textSize="24sp"
         android:layout_marginBottom="16dp" />
@@ -28,18 +28,19 @@
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <LinearLayout
+    <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:spacing="8dp"
-        android:layout_marginBottom="16dp">
+        android:columnCount="2"
+        android:rowCount="4"
+        android:layout_marginBottom="16dp"
+        android:useDefaultMargins="true">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_to_elder"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_columnWeight="1"
             android:text="→ Elder Futhark"
             app:cornerRadius="8dp" />
 
@@ -47,35 +48,59 @@
             android:id="@+id/btn_to_younger"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_columnWeight="1"
             android:text="→ Younger"
             app:cornerRadius="8dp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:spacing="8dp"
-        android:layout_marginBottom="16dp">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_from_futhark"
+            android:id="@+id/btn_to_hebrew"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="← From Runes"
+            android:layout_columnWeight="1"
+            android:text="→ Hebrew"
+            app:cornerRadius="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_to_nko"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="→ N'Ko"
+            app:cornerRadius="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_to_hausa"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="→ Hausa"
+            app:cornerRadius="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_to_geez"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="→ Ge'ez"
+            app:cornerRadius="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_from_script"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="← From Script"
             app:cornerRadius="8dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_clear"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_columnWeight="1"
             android:text="Clear"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             app:cornerRadius="8dp" />
-    </LinearLayout>
+    </GridLayout>
 
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
