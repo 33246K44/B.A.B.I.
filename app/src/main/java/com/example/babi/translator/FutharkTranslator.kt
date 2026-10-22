@@ -10,6 +10,31 @@ data class RuneInfo(
 
 object FutharkTranslator {
 
+    private fun convertToScript(input: String, map: Map<Char, String>): String {
+        if (input.isBlank()) return ""
+
+        return input.map { char ->
+            if (char.isWhitespace()) {
+                " "
+            } else {
+                map[char.lowercaseChar()] ?: char.toString()
+            }
+        }.joinToString("")
+    }
+
+    private fun convertFromScript(input: String, reverseMap: Map<String, Char>): String {
+        if (input.isBlank()) return ""
+
+        return input.map { char ->
+            if (char.isWhitespace()) {
+                ' '
+            } else {
+                val translated = reverseMap[char.toString()]
+                translated?.toString() ?: char.toString()
+            }
+        }.joinToString("")
+    }
+
     private val elderFutharkMap = mapOf(
         'a' to "ᚨ",
         'b' to "ᛒ",
@@ -68,8 +93,128 @@ object FutharkTranslator {
         'z' to "ᛉ"
     )
 
+    private val hebrewMap = mapOf(
+        'a' to "א",
+        'b' to "ב",
+        'c' to "כ",
+        'd' to "ד",
+        'e' to "ע",
+        'f' to "פ",
+        'g' to "ג",
+        'h' to "ח",
+        'i' to "י",
+        'j' to "ג",
+        'k' to "ק",
+        'l' to "ל",
+        'm' to "מ",
+        'n' to "נ",
+        'o' to "ו",
+        'p' to "פ",
+        'q' to "ק",
+        'r' to "ר",
+        's' to "ש",
+        't' to "ת",
+        'u' to "ו",
+        'v' to "ב",
+        'w' to "ו",
+        'x' to "ש",
+        'y' to "י",
+        'z' to "ז"
+    )
+
+    private val nkoMap = mapOf(
+        'a' to "ߊ",
+        'b' to "ߓ",
+        'c' to "ߗ",
+        'd' to "ߘ",
+        'e' to "ߍ",
+        'f' to "ߝ",
+        'g' to "ߜ",
+        'h' to "ߛ",
+        'i' to "ߌ",
+        'j' to "ߖ",
+        'k' to "ߞ",
+        'l' to "ߟ",
+        'm' to "ߡ",
+        'n' to "ߢ",
+        'o' to "ߍ",
+        'p' to "ߔ",
+        'q' to "߳",
+        'r' to "ߙ",
+        's' to "ߛ",
+        't' to "ߕ",
+        'u' to "ߎ",
+        'v' to "ߦ",
+        'w' to "ߥ",
+        'x' to "ߛ",
+        'y' to "ߌ",
+        'z' to "ߒ"
+    )
+
+    private val hausaAjamiMap = mapOf(
+        'a' to "ا",
+        'b' to "ب",
+        'c' to "چ",
+        'd' to "د",
+        'e' to "ي",
+        'f' to "ف",
+        'g' to "گ",
+        'h' to "ح",
+        'i' to "ي",
+        'j' to "ج",
+        'k' to "ك",
+        'l' to "ل",
+        'm' to "م",
+        'n' to "ن",
+        'o' to "و",
+        'p' to "پ",
+        'q' to "ق",
+        'r' to "ر",
+        's' to "س",
+        't' to "ت",
+        'u' to "و",
+        'v' to "ڢ",
+        'w' to "و",
+        'x' to "ش",
+        'y' to "ي",
+        'z' to "ز"
+    )
+
+    private val geezMap = mapOf(
+        'a' to "አ",
+        'b' to "በ",
+        'c' to "ቸ",
+        'd' to "ደ",
+        'e' to "ኤ",
+        'f' to "ፍ",
+        'g' to "ገ",
+        'h' to "ሀ",
+        'i' to "ኢ",
+        'j' to "ጃ",
+        'k' to "ከ",
+        'l' to "ለ",
+        'm' to "ም",
+        'n' to "ነ",
+        'o' to "ኦ",
+        'p' to "ፐ",
+        'q' to "ቀ",
+        'r' to "ረ",
+        's' to "ሰ",
+        't' to "ተ",
+        'u' to "ኡ",
+        'v' to "ቨ",
+        'w' to "ወ",
+        'x' to "ሽ",
+        'y' to "የ",
+        'z' to "ዘ"
+    )
+
     private val elderReverseMap = elderFutharkMap.entries.associate { it.value to it.key }
     private val youngerReverseMap = youngerFutharkMap.entries.associate { it.value to it.key }
+    private val hebrewReverseMap = hebrewMap.entries.associate { it.value to it.key }
+    private val nkoReverseMap = nkoMap.entries.associate { it.value to it.key }
+    private val hausaReverseMap = hausaAjamiMap.entries.associate { it.value to it.key }
+    private val geezReverseMap = geezMap.entries.associate { it.value to it.key }
 
     private val runeInfoMap = mapOf(
         "ᚠ" to RuneInfo("ᚠ", "Fehu", "wealth, livestock, prosperity"),
@@ -104,32 +249,37 @@ object FutharkTranslator {
         "ᛘ" to RuneInfo("ᛘ", "Mannaz/Young", "humanity"),
         "ᚭ" to RuneInfo("ᚭ", "Othala/Young", "home, inheritance"),
         "ᛦ" to RuneInfo("ᛦ", "Yr/Young", "yew, mystery"),
-        "ᛋ" to RuneInfo("ᛋ", "Sowilo/Young", "sun, vitality"),
-        "ᚱ" to RuneInfo("ᚱ", "Raido", "journey, travel")
+        "ᛋ" to RuneInfo("ᛋ", "Sowilo/Young", "sun, vitality")
     )
 
     fun toElderFuthark(input: String): String {
         if (input.isBlank()) return ""
-
-        return input.map { char ->
-            if (char.isWhitespace()) {
-                " "
-            } else {
-                elderFutharkMap[char.lowercaseChar()] ?: char.toString()
-            }
-        }.joinToString("")
+        return convertToScript(input, elderFutharkMap)
     }
 
     fun toYoungerFuthark(input: String): String {
         if (input.isBlank()) return ""
+        return convertToScript(input, youngerFutharkMap)
+    }
 
-        return input.map { char ->
-            if (char.isWhitespace()) {
-                " "
-            } else {
-                youngerFutharkMap[char.lowercaseChar()] ?: char.toString()
-            }
-        }.joinToString("")
+    fun toHebrew(input: String): String {
+        if (input.isBlank()) return ""
+        return convertToScript(input, hebrewMap)
+    }
+
+    fun toNko(input: String): String {
+        if (input.isBlank()) return ""
+        return convertToScript(input, nkoMap)
+    }
+
+    fun toHausaAjami(input: String): String {
+        if (input.isBlank()) return ""
+        return convertToScript(input, hausaAjamiMap)
+    }
+
+    fun toGeEz(input: String): String {
+        if (input.isBlank()) return ""
+        return convertToScript(input, geezMap)
     }
 
     fun fromFuthark(input: String): String {
@@ -146,11 +296,62 @@ object FutharkTranslator {
         }.joinToString("")
     }
 
+    fun fromHebrew(input: String): String {
+        if (input.isBlank()) return ""
+        return convertFromScript(input, hebrewReverseMap)
+    }
+
+    fun fromNko(input: String): String {
+        if (input.isBlank()) return ""
+        return convertFromScript(input, nkoReverseMap)
+    }
+
+    fun fromHausaAjami(input: String): String {
+        if (input.isBlank()) return ""
+        return convertFromScript(input, hausaReverseMap)
+    }
+
+    fun fromGeEz(input: String): String {
+        if (input.isBlank()) return ""
+        return convertFromScript(input, geezReverseMap)
+    }
+
     fun containsFuthark(input: String): Boolean {
         if (input.isBlank()) return false
         return input.any { char ->
             val rune = char.toString()
             rune in elderReverseMap || rune in youngerReverseMap || rune in runeInfoMap
+        }
+    }
+
+    fun containsHebrew(input: String): Boolean {
+        if (input.isBlank()) return false
+        return input.any { char ->
+            val value = char.toString()
+            value in hebrewReverseMap || value in "אבגדהוזחטיכלמנסעפץצקרשת"
+        }
+    }
+
+    fun containsNko(input: String): Boolean {
+        if (input.isBlank()) return false
+        return input.any { char ->
+            char.toString() in nkoReverseMap || char.toString() in "ߊߋߌߍߎߏߐߑߒߓߔߕߖߗߘߙߚߛߜߝߞߟߠߡߢߣߤߥߦߧߨߩߪ߫߬߭߮߯߰"
+        }
+    }
+
+    fun containsHausaAjami(input: String): Boolean {
+        if (input.isBlank()) return false
+        return input.any { char ->
+            val value = char.toString()
+            value in hausaReverseMap || value in "ابجدحخسشصضطظعغفقكلمنهويي"
+        }
+    }
+
+    fun containsGeEz(input: String): Boolean {
+        if (input.isBlank()) return false
+        return input.any { char ->
+            val value = char.toString()
+            value in geezReverseMap || value in "ሀሁሂሃሄህሆለሉሊላሌልሎሏሐሑሒሓሔሕሖሗመሙሚማሜምሞሟሠሡሢሣሤሥሦሧረሩሪራሬርሮሯሰሱሲሳሴስሶሷሸሹሺሻሼሽሾሿቀቁቂቃቄቅቆቇቈ቉ቊቋቌቍቐቑቒቓቔቕቖቘ቙ቚቛቜቝበቡቢባቤብቦቧቨቩቪቫቬቭቮቯተቱቲታቴትቶቷቸቹቺቻቼችቾቿኀኁኂኃኄኅኆኇኈ኉ኊኋኌኍ኎኏ነኑኒናኔንኖኗኘኙኚኛኜኝኞኟአኡኢኣኤእኦኧከኩኪካኬክኮኯኰ኱ኲኳኴኵ኶኷ኸኹኺኻኼኽኾዀ዁ዂዃዄዅ዆዇ወዉዊዋዌውዎዏዐዑዒዓዔዕዖ዗ዘዙዚዛዜዝዞዟዠዡዢዣዤዥዦዧየዩዪያዬይዮዯደዱዲዳዴድዶዷጀጁጂጃጄጅጆጇገጉጊጋጌግጎጏጐ጑ጒጓጔጕጘጙጚጛጜጝጞጟጠጡጢጣጤጥጦጧጨጩጪጫጬጭጮጯጰጱጲጳጴጵጶጷጸጹጺጻጼጽጾጿፀፁፂፃፄፅፆፇፈፉፊፋፌፍፎፏፐፑፒፓፔፕፖፗፘፙፚ"
         }
     }
 
@@ -168,7 +369,7 @@ object FutharkTranslator {
 
         val runeCount = translatedText.count { char ->
             val rune = char.toString()
-            rune in elderReverseMap || rune in youngerReverseMap || rune in runeInfoMap
+            rune in elderReverseMap || rune in youngerReverseMap || rune in runeInfoMap || rune in hebrewReverseMap || rune in nkoReverseMap || rune in hausaReverseMap || rune in geezReverseMap
         }
 
         return mapOf(
