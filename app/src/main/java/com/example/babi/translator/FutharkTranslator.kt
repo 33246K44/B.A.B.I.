@@ -29,8 +29,7 @@ object FutharkTranslator {
             if (char.isWhitespace()) {
                 ' '
             } else {
-                val translated = reverseMap[char.toString()]
-                translated?.toString() ?: char.toString()
+                reverseMap[char.toString()]?.toString() ?: char.toString()
             }
         }.joinToString("")
     }
@@ -249,38 +248,21 @@ object FutharkTranslator {
         "ᛘ" to RuneInfo("ᛘ", "Mannaz/Young", "humanity"),
         "ᚭ" to RuneInfo("ᚭ", "Othala/Young", "home, inheritance"),
         "ᛦ" to RuneInfo("ᛦ", "Yr/Young", "yew, mystery"),
-        "ᛋ" to RuneInfo("ᛋ", "Sowilo/Young", "sun, vitality")
+        "ᛋ" to RuneInfo("ᛋ", "Sowilo/Young", "sun, vitality"),
+        "ᚱ" to RuneInfo("ᚱ", "Raido", "journey, travel")
     )
 
-    fun toElderFuthark(input: String): String {
-        if (input.isBlank()) return ""
-        return convertToScript(input, elderFutharkMap)
-    }
+    fun toElderFuthark(input: String): String = convertToScript(input, elderFutharkMap)
 
-    fun toYoungerFuthark(input: String): String {
-        if (input.isBlank()) return ""
-        return convertToScript(input, youngerFutharkMap)
-    }
+    fun toYoungerFuthark(input: String): String = convertToScript(input, youngerFutharkMap)
 
-    fun toHebrew(input: String): String {
-        if (input.isBlank()) return ""
-        return convertToScript(input, hebrewMap)
-    }
+    fun toHebrew(input: String): String = convertToScript(input, hebrewMap)
 
-    fun toNko(input: String): String {
-        if (input.isBlank()) return ""
-        return convertToScript(input, nkoMap)
-    }
+    fun toNko(input: String): String = convertToScript(input, nkoMap)
 
-    fun toHausaAjami(input: String): String {
-        if (input.isBlank()) return ""
-        return convertToScript(input, hausaAjamiMap)
-    }
+    fun toHausaAjami(input: String): String = convertToScript(input, hausaAjamiMap)
 
-    fun toGeEz(input: String): String {
-        if (input.isBlank()) return ""
-        return convertToScript(input, geezMap)
-    }
+    fun toGeEz(input: String): String = convertToScript(input, geezMap)
 
     fun fromFuthark(input: String): String {
         if (input.isBlank()) return ""
@@ -296,25 +278,13 @@ object FutharkTranslator {
         }.joinToString("")
     }
 
-    fun fromHebrew(input: String): String {
-        if (input.isBlank()) return ""
-        return convertFromScript(input, hebrewReverseMap)
-    }
+    fun fromHebrew(input: String): String = convertFromScript(input, hebrewReverseMap)
 
-    fun fromNko(input: String): String {
-        if (input.isBlank()) return ""
-        return convertFromScript(input, nkoReverseMap)
-    }
+    fun fromNko(input: String): String = convertFromScript(input, nkoReverseMap)
 
-    fun fromHausaAjami(input: String): String {
-        if (input.isBlank()) return ""
-        return convertFromScript(input, hausaReverseMap)
-    }
+    fun fromHausaAjami(input: String): String = convertFromScript(input, hausaReverseMap)
 
-    fun fromGeEz(input: String): String {
-        if (input.isBlank()) return ""
-        return convertFromScript(input, geezReverseMap)
-    }
+    fun fromGeEz(input: String): String = convertFromScript(input, geezReverseMap)
 
     fun containsFuthark(input: String): Boolean {
         if (input.isBlank()) return false
@@ -335,7 +305,8 @@ object FutharkTranslator {
     fun containsNko(input: String): Boolean {
         if (input.isBlank()) return false
         return input.any { char ->
-            char.toString() in nkoReverseMap || char.toString() in "ߊߋߌߍߎߏߐߑߒߓߔߕߖߗߘߙߚߛߜߝߞߟߠߡߢߣߤߥߦߧߨߩߪ߫߬߭߮߯߰"
+            val value = char.toString()
+            value in nkoReverseMap || value in "ߊߋߌߍߎߏߐߑߒߓߔߕߖߗߘߙߚߛߜߝߞߟߠߡߢߣߤߥߦߧߨߩߪ߫߬߭߮߯߰"
         }
     }
 
@@ -355,9 +326,7 @@ object FutharkTranslator {
         }
     }
 
-    fun getRuneDetails(rune: String): RuneInfo? {
-        return runeInfoMap[rune.trim()]
-    }
+    fun getRuneDetails(rune: String): RuneInfo? = runeInfoMap[rune.trim()]
 
     fun getTranslationStats(originalText: String, translatedText: String): Map<String, Any> {
         val normalizedOriginal = originalText.trim()
